@@ -9,6 +9,7 @@ export default class App {
 		let result: Array<number> = [];
 		for (const number of numberArray) {
 			const complement: number = target - number;
+                        if(complement === 0) return [numberArray.indexOf(number)];
 			if (complement > 0 && numberArray.includes(complement)) {
 				result = [numberArray.indexOf(number), numberArray.indexOf(complement)];
 				break;
@@ -18,19 +19,25 @@ export default class App {
 	}
 }
 
-interface Expected {
+const numberArray:Array<number> = [2, 4, 8, 16, 32];
+
+interface ExpectedCase {
 	target: number;
 	expect_indexes: Array<number>;
 }
 
-[
+const expected_cases: Array<ExpectedCase> = [
 	{ target: 12, expect_indexes: [1, 2] },
 	{ target: 34, expect_indexes: [0, 4] },
 	{ target: 18, expect_indexes: [0, 3] },
+        {target: 16, expect_indexes: [numberArray.indexOf(16)]},
+        {target: 32, expect_indexes: [numberArray.indexOf(32)]},
 	{ target: 42, expect_indexes: [] },
-].forEach((expect: Expected) =>
+];
+
+expected_cases.forEach((expect: ExpectedCase) =>
 	console.assert(
-		JSON.stringify(App.twoSum([2, 4, 8, 16, 32], expect.target)) ===
+		JSON.stringify(App.twoSum(numberArray, expect.target)) ===
 			JSON.stringify(expect.expect_indexes),
 		new Error(`Sum for total of "${expect.target}"`)
 	)
