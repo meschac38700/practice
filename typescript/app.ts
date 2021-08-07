@@ -7,9 +7,9 @@ export default class App {
 	 */
 	static twoSum(numberArray: Array<number>, target: number): Array<number> {
 		let result: Array<number> = [];
+		if (numberArray.includes(target)) return [numberArray.indexOf(target)];
 		for (const number of numberArray) {
 			const complement: number = target - number;
-                        if(complement === 0) return [numberArray.indexOf(number)];
 			if (complement > 0 && numberArray.includes(complement)) {
 				result = [numberArray.indexOf(number), numberArray.indexOf(complement)];
 				break;
@@ -19,7 +19,7 @@ export default class App {
 	}
 }
 
-const numberArray:Array<number> = [2, 4, 8, 16, 32];
+const numberArray: Array<number> = [2, 4, 8, 16, 32];
 
 interface ExpectedCase {
 	target: number;
@@ -30,8 +30,8 @@ const expected_cases: Array<ExpectedCase> = [
 	{ target: 12, expect_indexes: [1, 2] },
 	{ target: 34, expect_indexes: [0, 4] },
 	{ target: 18, expect_indexes: [0, 3] },
-        {target: 16, expect_indexes: [numberArray.indexOf(16)]},
-        {target: 32, expect_indexes: [numberArray.indexOf(32)]},
+	{ target: 16, expect_indexes: [numberArray.indexOf(16)] },
+	{ target: 32, expect_indexes: [numberArray.indexOf(32)] },
 	{ target: 42, expect_indexes: [] },
 ];
 
