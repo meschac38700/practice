@@ -12,13 +12,13 @@ public class App {
      * @return Array of indexes or empty Array
      */
     public static int[]  twoSum(int[] numberArray, int target ){
-
+        List<Integer> listNumbers = Arrays.stream(numberArray)
+            .boxed()
+            .collect(Collectors.toList());
+        if(listNumbers.contains(target)) return new int[] {listNumbers.indexOf(target)};
         for(int i =0; i < numberArray.length; i++)
         {
             int complement = target - numberArray[i];
-            List<Integer> listNumbers = Arrays.stream(numberArray)
-                .boxed()
-                .collect(Collectors.toList());
             if(complement > 0 && listNumbers.contains(complement))
             {
                 return new int[] {i, listNumbers.indexOf(complement)};
@@ -34,6 +34,8 @@ public class App {
             12, new int[]{1, 2},
             34, new int[]{0, 4},
             18, new int[]{0, 3},
+            16, new int[]{3},
+            32, new int[]{4},
             42, new int[]{}
         );
 
