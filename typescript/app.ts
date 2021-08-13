@@ -1,4 +1,29 @@
+class EvenOdd {
+	public constructor(public even: Array<number>, public odd: Array<number>) {}
+
+	public equalsTo(other: EvenOdd): boolean {
+		return JSON.stringify(this) === JSON.stringify(other);
+	}
+
+	public toString(): string {
+		return `Even: [ ${this.even.join(", ")} ], Odd: [ ${this.odd.join(", ")} ]`;
+	}
+}
+
 export default class App {
+	/**
+	 * @param numberArray array to divide
+	 * @returns EvenOdd instance that contains odd and even numbers
+	 */
+	public static arrayToEvenOdd(numberArray: Array<number>): EvenOdd {
+		const oddNumbers: Array<number> = [];
+		const evenNumbers: Array<number> = [];
+		numberArray.forEach((n) =>
+			n % 2 === 0 ? evenNumbers.push(n) : oddNumbers.push(n)
+		);
+		return new EvenOdd(evenNumbers, oddNumbers);
+	}
+
 	/**
 	 * Sort desc and filter numbers less than {maxNumber} in {numberArray}
 	 * @param numberArray Array to filter
@@ -9,10 +34,15 @@ export default class App {
 		numberArray: Array<number>,
 		maxNumber: number
 	): Array<number> {
-		return numberArray.sort((a, b) => b - a).filter((n) => n > maxNumber);
+		return numberArray.sort((a, b) => b - a).filter((n) => n < maxNumber);
 	}
 
-	private static sumOfEquals(
+	/**
+	 * @param numberArray array of number
+	 * @param target expected sum result
+	 * @returns boolean array sum equals to target number
+	 */
+	public static sumOfEquals(
 		numberArray: Array<number>,
 		target: number
 	): boolean {
@@ -37,40 +67,16 @@ export default class App {
 		}
 		return result;
 	}
-
-	static findAllIndexes(
-		numberArray: Array<number>,
-		target: number
-	): Array<number> {
-		let numArray = App.sortAndFilterLessThan(numberArray, target);
-		let keepLoop = true;
-		let i = 0;
-		let numbers: Array<number> = [];
-		while (keepLoop) {
-			if (!numArray.length) keepLoop = false;
-
-			if (App.sumOfEquals([...numArray], target)) {
-				return numArray;
-			}
-
-			const complement: number = target - numArray[0];
-			numbers.push(numArray[0]);
-			numArray = App.sortAndFilterLessThan(numberArray, complement);
-			if (!numArray.length) {
-				numArray.shift();
-				numbers.pop();
-				continue;
-			}
-
-			if (!numArray.includes(complement)) {
-				continue;
-			}
-		}
-	}
 }
 
-const numberArray: Array<number> = [1, 2, 4, 8]; // 14 2 => 2 -> 12 -> not in [2, 4, 8, 16, 32] then [4, 8,] 12 - 4 = 8 in [ 4, 8] True then [indexOf(2), indexOf(4), indexOf(8)]
+console.assert(
+	App.arrayToEvenOdd([1, 2, 3, 4, 8, 16, 32]).equalsTo(
+		new EvenOdd([2, 4, 8, 16, 32], [1, 3])
+	),
+	new Error(`Divide odd/even of "[1, 2, 3, 4, 8, 16, 32]"`)
+);
 
+const numberArray: Array<number> = [2, 4, 8, 16, 32];
 interface ExpectedCase {
 	target: number;
 	expect_indexes: Array<number>;
@@ -92,5 +98,18 @@ expected_cases.forEach((expect: ExpectedCase) =>
 		new Error(`Sum for total of "${expect.target}"`)
 	)
 );
+
+const expectedCases: Array<ExpectedCase> = [
+	{ target: 3, expect_indexes: [1, 2] },
+	{ target: 4, expect_indexes: [0, 4] },
+	{ target: 11, expect_indexes: [1, 2, 3, 5] },
+];
+expectedCases.forEach((expect: ExpectedCase) =>
+	console.assert(
+		App.sumOfEquals(expect.expect_indexes, expect.target),
+		new Error(`Sum of [${expect.expect_indexes}] != ${expect.target}`)
+	)
+);
+console.assert(App.sumOfEquals([1, 2], 3), new Error(`Sum of [1,2] != 3`));
 
 console.log("Everything is OK");
